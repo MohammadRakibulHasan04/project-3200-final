@@ -20,12 +20,43 @@ export const appwriteConfig = {
   roadmapStepsCollectionId: "roadmap_steps",
 };
 
+// Validate required environment variables
+const requiredEnvVars = {
+  endpoint: appwriteConfig.endpoint,
+  projectId: appwriteConfig.projectId,
+  platform: appwriteConfig.platform,
+  databaseId: appwriteConfig.databaseId,
+  userCollectionId: appwriteConfig.userCollectionId,
+};
+
+const missingVars: string[] = [];
+Object.entries(requiredEnvVars).forEach(([key, value]) => {
+  if (!value) {
+    missingVars.push(key);
+  }
+});
+
+if (missingVars.length > 0) {
+  console.error(
+    "[Appwrite] Missing required environment variables:",
+    missingVars
+  );
+  console.error("[Appwrite] Please check your .env file");
+}
+
 const client = new Client();
 
-client
-  .setEndpoint(appwriteConfig.endpoint!)
-  .setProject(appwriteConfig.projectId!)
-  .setPlatform(appwriteConfig.platform!);
+// Only set client configuration if all required vars exist
+if (missingVars.length === 0) {
+  client
+    .setEndpoint(appwriteConfig.endpoint!)
+    .setProject(appwriteConfig.projectId!)
+    .setPlatform(appwriteConfig.platform!);
+} else {
+  console.warn(
+    "[Appwrite] Client not initialized due to missing configuration"
+  );
+}
 
 export const account = new Account(client);
 export const databases = new Databases(client);

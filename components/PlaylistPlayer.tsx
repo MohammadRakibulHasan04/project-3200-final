@@ -78,7 +78,7 @@ const PlaylistPlayer = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transformedVideos: PlaylistVideo[] = playlistItems.map(
         (item: any, index: number) => ({
-          id: item.id,
+          id: item.contentDetails.videoId, // Use videoId as unique identifier instead of item.id
           videoId: item.contentDetails.videoId,
           title: item.snippet.title,
           thumbnail:
@@ -245,7 +245,9 @@ const PlaylistPlayer = ({
                 data={videos}
                 renderItem={renderVideoItem}
                 keyExtractor={(item, index) =>
-                  item?.id || `video-item-${index}`
+                  item?.videoId
+                    ? `${item.videoId}-${index}`
+                    : `video-item-${index}`
                 }
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.playlistContent}

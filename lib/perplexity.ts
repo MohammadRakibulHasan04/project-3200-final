@@ -413,7 +413,9 @@ interface UserContext {
 export const chatWithLearnTubeAI = async (
   userMessage: string,
   userContext: UserContext,
-  chatHistory: ChatMessage[] = []
+  chatHistory: ChatMessage[] = [],
+  title?: string,
+  description?: string
 ): Promise<string> => {
   console.log("[Perplexity] Chat request from:", userContext.name);
 
@@ -423,7 +425,7 @@ export const chatWithLearnTubeAI = async (
 
   try {
     // Build the system prompt with user context
-    const systemPrompt = `You are LearnTube AI, a focused and helpful learning assistant. Your role is to help users learn and grow in their chosen fields.
+    let systemPrompt = `You are LearnTube AI, a focused and helpful learning assistant. Your role is to help users learn and grow in their chosen fields.
 
 **User Profile:**
 - Name: ${userContext.name}
@@ -438,7 +440,21 @@ export const chatWithLearnTubeAI = async (
 3. Clarify concepts and explain difficult topics in their areas of interest
 4. Provide recommendations for what to learn next
 5. Assist with doubts and questions about their coursework
+`;
 
+    // Add specific context if provided
+    if (title && description) {
+        systemPrompt += `
+**CURRENT CONTEXT:**
+The user is currently viewing a step/video titled: "${title}"
+Description: "${description}"
+
+**CRITICAL INSTRUCTION:**
+The user's question relates to THIS specific context. Answer primarily based on this topic. If they ask "what is this?", explain "${title}".
+`;
+    }
+
+    systemPrompt += `
 **IMPORTANT Rules:**
 - Stay focused ONLY on topics related to: ${userContext.selectedCategories.join(
       ", "

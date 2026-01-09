@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
+import { MotiView } from "moti";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -12,6 +13,7 @@ import {
     View,
 } from "react-native";
 import { Query } from "react-native-appwrite";
+import AIChatModal from "../../components/AIChatModal";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { appwriteConfig, databases } from "../../lib/appwrite";
 import {
@@ -30,6 +32,9 @@ export default function Roadmap() {
   const [roadmapSteps, setRoadmapSteps] = useState<RoadmapStep[]>([]);
   const [currentStep, setCurrentStep] = useState<RoadmapStep | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
+  const [chatContextTitle, setChatContextTitle] = useState("");
+  const [chatContextDesc, setChatContextDesc] = useState("");
 
   useEffect(() => {
     if (user && !initialized) {
@@ -157,6 +162,12 @@ export default function Roadmap() {
     );
   };
 
+  const handleAskAI = (step: RoadmapStep) => {
+    setChatContextTitle(step.title);
+    setChatContextDesc(step.description);
+    setChatVisible(true);
+  };
+
 
 
   const getStatusIcon = (status: string) => {
@@ -186,78 +197,84 @@ export default function Roadmap() {
     const isLocked = item.status === "not_started";
 
     return (
-      <TouchableOpacity
-        style={{
-          backgroundColor: isActive ? "#2A2A3E" : "#1E1E2D",
-          borderRadius: 12,
-          padding: 16,
-          marginBottom: 12,
-          borderWidth: isActive ? 2 : 1,
-          borderColor: isActive ? "#FF8E01" : "#232533",
-          opacity: isLocked ? 0.6 : 1,
-        }}
-        onPress={() => handleStepPress(item)}
-        disabled={isLocked}
+      <MotiView
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: item.stepNumber * 100 }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View
+        <TouchableOpacity
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: getStatusColor(item.status) + "20",
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 12,
+            backgroundColor: isActive ? "#2A2A3E" : "#1E1E2D",
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 12,
+            borderWidth: isActive ? 2 : 1,
+            borderColor: isActive ? "#FF8E01" : "#232533",
+            opacity: isLocked ? 0.6 : 1,
             }}
-          >
-            <Ionicons
-              name={getStatusIcon(item.status) as any}
-              size={24}
-              color={getStatusColor(item.status)}
-            />
-          </View>
-
-          <View style={{ flex: 1 }}>
+            onPress={() => handleStepPress(item)}
+            disabled={isLocked}
+        >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 4,
-              }}
-            >
-              <Text style={{ color: "#CDCDE0", fontSize: 12, marginRight: 8 }}>
-                Step {item.stepNumber}
-              </Text>
-              <View
                 style={{
-                  backgroundColor: "#232533",
-                  paddingHorizontal: 8,
-                  paddingVertical: 2,
-                  borderRadius: 4,
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: getStatusColor(item.status) + "20",
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 12,
                 }}
-              >
-                <Text style={{ color: "#CDCDE0", fontSize: 10 }}>
-                  {item.category}
-                </Text>
-              </View>
-            </View>
-            <Text
-              style={{
-                color: "white",
-                fontSize: 15,
-                fontWeight: "600",
-                marginBottom: 4,
-              }}
             >
-              {item.title}
-            </Text>
-            <Text style={{ color: "#7C7C8A", fontSize: 12 }} numberOfLines={2}>
-              {item.description}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+                <Ionicons
+                name={getStatusIcon(item.status) as any}
+                size={24}
+                color={getStatusColor(item.status)}
+                />
+            </View>
+
+            <View style={{ flex: 1 }}>
+                <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                }}
+                >
+                <Text style={{ color: "#CDCDE0", fontSize: 12, marginRight: 8 }}>
+                    Step {item.stepNumber}
+                </Text>
+                <View
+                    style={{
+                    backgroundColor: "#232533",
+                    paddingHorizontal: 8,
+                    paddingVertical: 2,
+                    borderRadius: 4,
+                    }}
+                >
+                    <Text style={{ color: "#CDCDE0", fontSize: 10 }}>
+                    {item.category}
+                    </Text>
+                </View>
+                </View>
+                <Text
+                style={{
+                    color: "white",
+                    fontSize: 15,
+                    fontWeight: "600",
+                    marginBottom: 4,
+                }}
+                >
+                {item.title}
+                </Text>
+                <Text style={{ color: "#7C7C8A", fontSize: 12 }} numberOfLines={2}>
+                {item.description}
+                </Text>
+            </View>
+            </View>
+        </TouchableOpacity>
+      </MotiView>
     );
   };
 
@@ -429,6 +446,38 @@ export default function Roadmap() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+       {/* Floating "Ask AI" Button for Current Step */}
+      {currentStep && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            bottom: 30,
+            right: 20,
+            backgroundColor: '#FF8E01',
+            borderRadius: 30,
+            width: 60,
+            height: 60,
+            justifyContent: 'center',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+          }}
+          onPress={() => handleAskAI(currentStep)}
+        >
+          <Ionicons name="chatbubble-ellipses" size={28} color="white" />
+        </TouchableOpacity>
+      )}
+
+      <AIChatModal
+        visible={chatVisible}
+        onClose={() => setChatVisible(false)}
+        contextTitle={chatContextTitle}
+        contextDescription={chatContextDesc}
+      />
     </SafeAreaView>
   );
 }
