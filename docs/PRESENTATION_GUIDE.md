@@ -34,9 +34,19 @@ Show the app flow:
 5. **Courses** → Saved playlists
 6. **Discussion** → AI chat assistant
 
-### 4. **Technical Architecture** (1.5 minutes)
+### 4. **Technical Implementation** (1.5 minutes)
 
 _"Built with React Native for cross-platform mobile development. Uses Appwrite for backend, integrating multiple APIs: YouTube for content, Gemini AI for roadmap generation, and Perplexity for chat. Implements professional error handling and automated build processes."_
+
+**High-Level Technical Overview:**
+
+- **Frontend**: React Native + Expo + TypeScript for cross-platform mobile development
+- **Backend**: Appwrite cloud backend with custom collections and relationships
+- **AI Services**: Google Gemini for roadmap generation, Perplexity for conversational AI
+- **Content**: YouTube Data API v3 for video curation
+- **Architecture**: Component-based architecture with context for state management
+- **Error Handling**: Comprehensive error boundaries and retry mechanisms
+- **Build System**: Automated build scripts with validation and multiple profiles
 
 ### 5. **Key Features** (30 seconds)
 

@@ -20,12 +20,12 @@
 
 **For teachers, presentations, and understanding the project:**
 
-- 🎯 **[START HERE: Documentation Index](DOCUMENTATION_INDEX.md)** - Find exactly what you need
-- ⚡ **[Quick Reference](QUICK_REFERENCE.md)** - 1-page cheat sheet (print this!)
-- 🎤 **[Presentation Guide](PRESENTATION_GUIDE.md)** - How to present to your teacher
-- 📖 **[Complete Explanation](PROJECT_EXPLANATION.md)** - Every file explained in detail
-- 🏗️ **[Architecture Diagrams](ARCHITECTURE_DIAGRAM.md)** - Visual system design
-- 🚀 **[Build Guide](BUILD_GUIDE.md)** - How to create Android APK
+- 🎯 **[START HERE: Documentation Index](docs/DOCUMENTATION_INDEX.md)** - Find exactly what you need
+- ⚡ **[Quick Reference](docs/QUICK_REFERENCE.md)** - 1-page cheat sheet (print this!)
+- 🎤 **[Presentation Guide](docs/PRESENTATION_GUIDE.md)** - How to present to your teacher
+- 📖 **[Complete Explanation](docs/PROJECT_EXPLANATION.md)** - Every file explained in detail
+- 🏗️ **[Architecture Diagrams](docs/ARCHITECTURE_DIAGRAM.md)** - Visual system design
+- 🚀 **[Build Guide](docs/BUILD_GUIDE.md)** - How to create Android APK
 
 **Quick Actions:**
 
